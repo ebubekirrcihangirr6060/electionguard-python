@@ -176,7 +176,7 @@ class DiscreteLog(Singleton):
         exponent = min(exponent, self._max_exponent)
 
         async with self._mutex:
-            precompute_discrete_log_cache(exponent)
+            precompute_discrete_log_cache(exponent, self._cache)
 
     def discrete_log(self, element: ElementModP) -> int:
         result, _cache = compute_discrete_log(

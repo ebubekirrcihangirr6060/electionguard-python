@@ -115,9 +115,11 @@ class TestDiscreteLogClass(BaseTestCase):
         element = g_pow_p(exponent)
 
         # Act
-        DiscreteLog().set_lazy_evaluation(False)
-        DiscreteLog().precompute_cache(exponent)
-        calculated_exponent = DiscreteLog().discrete_log(element)
+        dlog = DiscreteLog.get_instance()
+        dlog.set_lazy_evaluation(False)
+        self.addCleanup(dlog.set_lazy_evaluation, True)
+        dlog.precompute_cache(exponent)
+        calculated_exponent = dlog.discrete_log(element)
 
         # Assert
         self.assertGreaterEqual(len(DiscreteLog().get_cache()), minimum_cache_size)

@@ -62,7 +62,9 @@ class ElGamalCiphertext:
         :param product: The known product (blinding factor).
         :return: An exponentially encoded plaintext message.
         """
-        return DiscreteLog().discrete_log(mult_p(self.data, mult_inv_p(product)))
+        return DiscreteLog.get_instance().discrete_log(
+            mult_p(self.data, mult_inv_p(product))
+        )
 
     def decrypt(self, secret_key: ElGamalSecretKey) -> int:
         """

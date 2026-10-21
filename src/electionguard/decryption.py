@@ -36,7 +36,7 @@ from .key_ceremony import (
     get_backup_seed,
 )
 from .logs import log_warning
-from .scheduler import Scheduler
+from .scheduler import Scheduler, use_scheduler
 from .tally import CiphertextTally
 
 from .type import ContestId, GuardianId, SelectionId
@@ -241,16 +241,15 @@ def compute_decryption_share_for_contest(
     :param scheduler: Scheduler
     :return: Decryption share for contest or `None` if there is an error
     """
-    if not scheduler:
-        scheduler = Scheduler()
-
     selections: dict[SelectionId, CiphertextDecryptionSelection] = {}
 
-    decryptions: list[CiphertextDecryptionSelection | None] = scheduler.schedule(
-        compute_decryption_share_for_selection,
-        [(key_pair, selection, context) for selection in contest.selections],
-        with_shared_resources=True,
-    )
+    decryptions: list[CiphertextDecryptionSelection | None]
+    with use_scheduler(scheduler) as active_scheduler:
+        decryptions = active_scheduler.schedule(
+            compute_decryption_share_for_selection,
+            [(key_pair, selection, context) for selection in contest.selections],
+            with_shared_resources=True,
+        )
 
     for decryption in decryptions:
         if decryption is None:
@@ -283,13 +282,11 @@ def compute_compensated_decryption_share_for_contest(
     :param context: The public election encryption context
     :return: a `CiphertextCompensatedDecryptionContest` or `None` if there is an error
     """
-    if not scheduler:
-        scheduler = Scheduler()
-
     selections: dict[SelectionId, CiphertextCompensatedDecryptionSelection] = {}
 
-    selection_decryptions: list[CiphertextCompensatedDecryptionSelection | None] = (
-        scheduler.schedule(
+    selection_decryptions: list[CiphertextCompensatedDecryptionSelection | None]
+    with use_scheduler(scheduler) as active_scheduler:
+        selection_decryptions = active_scheduler.schedule(
             compute_compensated_decryption_share_for_selection,
             [
                 (
@@ -303,7 +300,6 @@ def compute_compensated_decryption_share_for_contest(
             ],
             with_shared_resources=True,
         )
-    )
 
     for decryption in selection_decryptions:
         if decryption is None:

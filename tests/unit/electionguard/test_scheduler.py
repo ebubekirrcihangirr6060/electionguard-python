@@ -1,9 +1,10 @@
 # pylint: disable=consider-using-with
 from multiprocessing import Pool
+from unittest.mock import patch
 
 from tests.base_test_case import BaseTestCase
 
-from electionguard.scheduler import Scheduler
+from electionguard.scheduler import Scheduler, use_scheduler
 
 
 def _callable(data: int):
@@ -51,3 +52,34 @@ class TestScheduler(BaseTestCase):
         self.assertIsInstance(result, list)
 
         subject.close()
+
+    @patch("electionguard.scheduler.ThreadPool")
+    @patch("electionguard.scheduler.ProcessPool")
+    def test_context_manager_opens_pools_once(self, process_pool, thread_pool):
+        # Act
+        with Scheduler():
+            pass
+
+        # Assert
+        process_pool.assert_called_once()
+        thread_pool.assert_called_once()
+        process_pool.return_value.close.assert_called_once()
+        thread_pool.return_value.close.assert_called_once()
+
+    @patch("electionguard.scheduler.ThreadPool")
+    @patch("electionguard.scheduler.ProcessPool")
+    def test_use_scheduler_closes_only_schedulers_it_creates(
+        self, process_pool, _thread_pool
+    ):
+        # Arrange
+        existing = Scheduler()
+
+        # Act
+        with use_scheduler(existing) as scheduler:
+            self.assertIs(scheduler, existing)
+        with use_scheduler(None) as scheduler:
+            self.assertIsNot(scheduler, existing)
+
+        # Assert
+        self.assertEqual(process_pool.call_count, 2)
+        process_pool.return_value.close.assert_called_once()

@@ -1,10 +1,5 @@
-from collections.abc import Mapping
-
-from typing import (
-    Generic,
-    TypeVar,
-)
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Mapping
+from typing import Generic, TypeVar, cast
 
 _T = TypeVar("_T")
 _U = TypeVar("_U")
@@ -27,7 +22,7 @@ class DataStore(Generic[_T, _U]):
 
     def all(self) -> list[_U]:
         """
-        Get all `SubmittedBallot` from the store
+        Get all values from the store
         """
         return list(self._store.values())
 
@@ -91,7 +86,7 @@ class DataStore(Generic[_T, _U]):
         return self._store.values()
 
 
-class ReadOnlyDataStore(Generic[_T, _U], Mapping):
+class ReadOnlyDataStore(Mapping[_T, _U]):
     """
     A readonly view to a Data store
     """
@@ -99,16 +94,13 @@ class ReadOnlyDataStore(Generic[_T, _U], Mapping):
     def __init__(self, data: DataStore[_T, _U]):
         self._data: DataStore[_T, _U] = data
 
-    def __getitem__(self, key: _T) -> _U | None:
-        return self._data.get(key)
+    def __getitem__(self, key: _T) -> _U:
+        if key not in self._data.keys():
+            raise KeyError(key)
+        return cast(_U, self._data.get(key))
 
     def __len__(self) -> int:
         return len(self._data)
 
-    def __iter__(self) -> Iterator:
-        return iter(self._data.items())
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ReadOnlyDataStore):
-            return False
-        return ReadOnlyDataStore.__eq__(self, other)
+    def __iter__(self) -> Iterator[_T]:
+        return iter(self._data.keys())

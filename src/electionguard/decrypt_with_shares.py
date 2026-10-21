@@ -186,7 +186,7 @@ def decrypt_selection_with_decryption_shares(
 
     # Calculate 𝑀=𝐵⁄(∏𝑀𝑖) mod 𝑝.
     decrypted_value = div_p(selection.ciphertext.data, all_shares_product_M)
-    d_log = DiscreteLog().discrete_log(decrypted_value)
+    d_log = DiscreteLog.get_instance().discrete_log(decrypted_value)
     return PlaintextTallySelection(
         selection.object_id,
         d_log,

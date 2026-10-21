@@ -1,8 +1,6 @@
-# pylint: disable=unnecessary-comprehension
 from dataclasses import dataclass, field
 from typing import Any
-from collections.abc import Iterable
-from collections.abc import Container, Sized
+from collections.abc import Container, Iterable, Sized
 
 from .ballot import (
     BallotBoxState,
@@ -19,7 +17,7 @@ from .elgamal import ElGamalCiphertext, elgamal_add
 from .group import ElementModQ, ONE_MOD_P, ElementModP
 from .logs import log_warning
 from .manifest import InternalManifest
-from .scheduler import Scheduler
+from .scheduler import Scheduler, use_scheduler
 from .type import BallotId, ContestId, SelectionId
 
 
@@ -126,19 +124,16 @@ class CiphertextTallyContest(OrderedObjectBase):
             )
             return False
 
-        if scheduler is None:
-            scheduler = Scheduler()
-
         # iterate through the tally selections and add the new value to the total
-        results: list[tuple[SelectionId, ElGamalCiphertext | None]] = (
-            scheduler.schedule(
+        results: list[tuple[SelectionId, ElGamalCiphertext | None]]
+        with use_scheduler(scheduler) as active_scheduler:
+            results = active_scheduler.schedule(
                 self._accumulate_selections,
                 [
                     (key, selection_tally, contest_selections)
                     for (key, selection_tally) in self.selections.items()
                 ],
             )
-        )
 
         for key, ciphertext in results:
             if ciphertext is None:
@@ -394,12 +389,11 @@ class CiphertextTally(ElectionObjectBase, Container, Sized):
     ) -> bool:
 
         result_set: list[tuple[SelectionId, ElGamalCiphertext]]
-        if not scheduler:
-            scheduler = Scheduler()
-        result_set = scheduler.schedule(
-            self._accumulate,
-            list(ciphertext_selections_by_selection_id.items()),
-        )
+        with use_scheduler(scheduler) as active_scheduler:
+            result_set = active_scheduler.schedule(
+                self._accumulate,
+                list(ciphertext_selections_by_selection_id.items()),
+            )
 
         result_dict = dict(result_set)
 

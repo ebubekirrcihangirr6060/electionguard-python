@@ -2,13 +2,12 @@
 # support for computing discrete logs, with a cache so they're never recomputed
 
 import asyncio
-from typing import Dict, Tuple, Optional
 
 from .constants import get_generator
 from .singleton import Singleton
 from .group import BaseElement, ElementModP, ONE_MOD_P, mult_p
 
-DiscreteLogCache = Dict[ElementModP, int]
+DiscreteLogCache = dict[ElementModP, int]
 
 _DLOG_MAX_EXPONENT = 100_000_000
 """The max exponent to calculate.  This value is used to stop a race condition."""
@@ -37,7 +36,7 @@ def compute_discrete_log(
     cache: DiscreteLogCache,
     max_exponent: int = _DLOG_MAX_EXPONENT,
     lazy_evaluation: bool = True,
-) -> Tuple[int, DiscreteLogCache]:
+) -> tuple[int, DiscreteLogCache]:
     """
     Computes the discrete log (base g, mod p) of the given element,
     with internal caching of results. Should run efficiently when called
@@ -65,7 +64,7 @@ async def compute_discrete_log_async(
     mutex: asyncio.Lock = asyncio.Lock(),
     max_exponent: int = _DLOG_MAX_EXPONENT,
     lazy_evaluation: bool = True,
-) -> Tuple[int, DiscreteLogCache]:
+) -> tuple[int, DiscreteLogCache]:
     """
     Computes the discrete log (base g, mod p) of the given element,
     with internal caching of results. Should run efficiently when called
@@ -91,7 +90,7 @@ async def compute_discrete_log_async(
 
 
 def precompute_discrete_log_cache(
-    max_exponent: int, cache: Optional[DiscreteLogCache] = None
+    max_exponent: int, cache: DiscreteLogCache | None = None
 ) -> DiscreteLogCache:
     """
     Precompute the discrete log by the max exponent.
@@ -180,13 +179,13 @@ class DiscreteLog(Singleton):
             precompute_discrete_log_cache(exponent)
 
     def discrete_log(self, element: ElementModP) -> int:
-        (result, _cache) = compute_discrete_log(
+        result, _cache = compute_discrete_log(
             element, self._cache, self._max_exponent, self._lazy_evaluation
         )
         return result
 
     async def discrete_log_async(self, element: ElementModP) -> int:
-        (result, _cache) = await compute_discrete_log_async(
+        result, _cache = await compute_discrete_log_async(
             element, self._cache, self._mutex, self._max_exponent, self._lazy_evaluation
         )
         return result

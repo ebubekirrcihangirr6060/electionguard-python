@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Type, TypeVar
+from typing import TypeVar
 from uuid import getnode
 
 from .ballot import (
@@ -39,7 +39,6 @@ from .utils import (
     ContestErrorType,
 )
 
-
 _T = TypeVar("_T", bound="ContestData")
 
 
@@ -47,12 +46,12 @@ _T = TypeVar("_T", bound="ContestData")
 class ContestData:
     """Contests errors and extended data from the selections on the contest."""
 
-    error: Optional[ContestErrorType] = field(default=None)
-    error_data: Optional[List[SelectionId]] = field(default=None)
-    write_ins: Optional[Dict[SelectionId, str]] = field(default=None)
+    error: ContestErrorType | None = field(default=None)
+    error_data: list[SelectionId] | None = field(default=None)
+    write_ins: dict[SelectionId, str] | None = field(default=None)
 
     @classmethod
-    def from_bytes(cls: Type[_T], data: bytes) -> _T:
+    def from_bytes(cls: type[_T], data: bytes) -> _T:
         return padded_decode(cls, data)
 
     def to_bytes(self) -> bytes:
@@ -90,7 +89,7 @@ class EncryptionDevice:
         """
         Get the current timestamp in utc
         """
-        return int(datetime.now(timezone.utc).timestamp())
+        return int(datetime.now(UTC).timestamp())
 
 
 class EncryptionMediator:
@@ -114,7 +113,7 @@ class EncryptionMediator:
         self._context = context
         self._encryption_seed = encryption_device.get_hash()
 
-    def encrypt(self, ballot: PlaintextBallot) -> Optional[CiphertextBallot]:
+    def encrypt(self, ballot: PlaintextBallot) -> CiphertextBallot | None:
         """
         Encrypt the specified ballot using the cached election context.
         """
@@ -168,7 +167,7 @@ def contest_from(description: ContestDescription) -> PlaintextBallotContest:
     :return: a `BallotContest`
     """
 
-    selections: List[PlaintextBallotSelection] = []
+    selections: list[PlaintextBallotSelection] = []
 
     for selection_description in description.ballot_selections:
         selections.append(selection_from(selection_description))
@@ -184,7 +183,7 @@ def encrypt_selection(
     nonce_seed: ElementModQ,
     is_placeholder: bool = False,
     should_verify_proofs: bool = False,
-) -> Optional[CiphertextBallotSelection]:
+) -> CiphertextBallotSelection | None:
     """
     Encrypt a specific `BallotSelection` in the context of a specific `BallotContest`
 
@@ -265,7 +264,7 @@ def encrypt_contest(
     crypto_extended_base_hash: ElementModQ,
     nonce_seed: ElementModQ,
     should_verify_proofs: bool = False,
-) -> Optional[CiphertextBallotContest]:
+) -> CiphertextBallotContest | None:
     """
     Encrypt a specific `BallotContest` in the context of a specific `Ballot`.
 
@@ -283,8 +282,8 @@ def encrypt_contest(
                  this value can be (or derived from) the Ballot nonce, but no relationship is required
     :param should_verify_proofs: specify if the proofs should be verified prior to returning (default False)
     """
-    error: Optional[ContestErrorType] = None
-    error_data: Optional[List[SelectionId]] = None
+    error: ContestErrorType | None = None
+    error_data: list[SelectionId] | None = None
 
     # Validate Input
     try:
@@ -304,7 +303,7 @@ def encrypt_contest(
     contest_nonce = nonce_sequence[contest_description.sequence_order]
     chaum_pedersen_nonce = next(iter(nonce_sequence))
 
-    encrypted_selections: List[CiphertextBallotSelection] = []
+    encrypted_selections: list[CiphertextBallotSelection] = []
 
     selection_count = 0
 
@@ -432,9 +431,9 @@ def encrypt_ballot(
     internal_manifest: InternalManifest,
     context: CiphertextElectionContext,
     encryption_seed: ElementModQ,
-    nonce: Optional[ElementModQ] = None,
+    nonce: ElementModQ | None = None,
     should_verify_proofs: bool = False,
-) -> Optional[CiphertextBallot]:
+) -> CiphertextBallot | None:
     """
     Encrypt a specific `Ballot` in the context of a specific `CiphertextElectionContext`.
 
@@ -518,9 +517,9 @@ def encrypt_ballot_contests(
     context: CiphertextElectionContext,
     nonce_seed: ElementModQ,
     should_verify_proofs: bool = False,
-) -> Optional[List[CiphertextBallotContest]]:
+) -> list[CiphertextBallotContest] | None:
     """Encrypt contests from a plaintext ballot with a specific style"""
-    encrypted_contests: List[CiphertextBallotContest] = []
+    encrypted_contests: list[CiphertextBallotContest] = []
 
     # Only iterate on contests for this specific ballot style
     for ballot_style_contest in description.get_contests_for(ballot.style_id):

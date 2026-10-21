@@ -41,6 +41,5 @@ class ViewTallyComponent(ComponentBase):
                 "report": tally_report,
             }
             return eel_success(result)
-        # pylint: disable=broad-except
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             return self.handle_error(e)

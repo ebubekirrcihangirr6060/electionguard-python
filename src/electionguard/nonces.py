@@ -1,5 +1,6 @@
 # pylint: disable=too-many-ancestors
-from typing import Union, Sequence, List, overload
+from typing import overload
+from collections.abc import Sequence
 
 from electionguard.group import ElementModQ, ElementModPOrQ
 from electionguard.hash import hash_elems
@@ -17,7 +18,7 @@ class Nonces(Sequence[ElementModQ]):
     and indexed. Asking for a nonce is constant time, regardless of the index.
     """
 
-    def __init__(self, seed: ElementModQ, *headers: Union[str, ElementModPOrQ]) -> None:
+    def __init__(self, seed: ElementModQ, *headers: str | ElementModPOrQ) -> None:
         if len(headers) > 0:
             self.__seed: ElementModQ = hash_elems(seed, *headers)
         else:
@@ -29,12 +30,10 @@ class Nonces(Sequence[ElementModQ]):
         pass
 
     @overload
-    def __getitem__(self, index: slice) -> List[ElementModQ]:
+    def __getitem__(self, index: slice) -> list[ElementModQ]:
         pass
 
-    def __getitem__(
-        self, index: Union[slice, int]
-    ) -> Union[ElementModQ, List[ElementModQ]]:
+    def __getitem__(self, index: slice | int) -> ElementModQ | list[ElementModQ]:
         if isinstance(index, int):
             return self.get_with_headers(index)
         if isinstance(index.stop, int):

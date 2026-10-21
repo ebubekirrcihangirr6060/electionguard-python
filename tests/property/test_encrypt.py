@@ -4,7 +4,6 @@ from copy import deepcopy
 from datetime import timedelta
 from random import Random
 from secrets import randbelow
-from typing import Tuple
 
 from hypothesis import HealthCheck
 from hypothesis import given, settings
@@ -54,7 +53,6 @@ from electionguard.manifest import (
     SelectionDescription,
     VoteVariationType,
 )
-
 
 election_factory = ElectionFactory.ElectionFactory()
 ballot_factory = BallotFactory.BallotFactory()
@@ -145,7 +143,7 @@ class TestEncrypt(BaseTestCase):
     )
     def test_encrypt_selection_valid_input_succeeds(
         self,
-        selection_description: Tuple[str, SelectionDescription],
+        selection_description: tuple[str, SelectionDescription],
         keypair: ElGamalKeyPair,
         seed: ElementModQ,
         random_seed: int,
@@ -188,7 +186,7 @@ class TestEncrypt(BaseTestCase):
     )
     def test_encrypt_selection_valid_input_tampered_encryption_fails(
         self,
-        selection_description: Tuple[str, SelectionDescription],
+        selection_description: tuple[str, SelectionDescription],
         keypair: ElGamalKeyPair,
         seed: ElementModQ,
         random_seed: int,
@@ -259,7 +257,7 @@ class TestEncrypt(BaseTestCase):
     )
     def test_encrypt_contest_valid_input_succeeds(
         self,
-        contest_description: Tuple[str, ContestDescription],
+        contest_description: tuple[str, ContestDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,
@@ -308,7 +306,7 @@ class TestEncrypt(BaseTestCase):
     )
     def test_encrypt_contest_valid_input_tampered_proof_fails(
         self,
-        contest_description: Tuple[str, ContestDescription],
+        contest_description: tuple[str, ContestDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,
@@ -372,7 +370,7 @@ class TestEncrypt(BaseTestCase):
     )
     def test_encrypt_contest_overvote_fails(
         self,
-        contest_description: Tuple[str, ContestDescription],
+        contest_description: tuple[str, ContestDescription],
         keypair: ElGamalKeyPair,
         seed: ElementModQ,
         overvotes: int,

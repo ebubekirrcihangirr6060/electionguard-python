@@ -86,9 +86,10 @@ extension-pkg-whitelist = "pydantic"
 max-line-length = 120
 
 # FIXME: Pylint should not require this many exceptions
-# import-self: pylint 4.1 false positive on mkinit __init__ files whose submodule names start with the package name
+# cyclic-import, import-self: pylint 4.1 false positives on mkinit __init__ files whose submodule names start with the package name
 [tool.pylint.messages_control]
 disable = '''
+  cyclic-import,
   duplicate-code,
   fixme,
   import-self,

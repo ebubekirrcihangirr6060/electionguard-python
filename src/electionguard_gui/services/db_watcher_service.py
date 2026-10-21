@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from collections.abc import Callable
 from threading import Event
 import eel
 from pymongo.database import Database
@@ -33,7 +33,7 @@ class DbWatcherService(ServiceBase):
     def watch_database(
         self,
         db: Database,
-        id_to_watch: Optional[str],
+        id_to_watch: str | None,
         on_found: Callable[[str, str], None],
     ) -> None:
         # retrieve a tailable cursor of the deltas in the database to avoid polling

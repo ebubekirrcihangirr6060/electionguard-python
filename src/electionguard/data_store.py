@@ -1,16 +1,10 @@
 from collections.abc import Mapping
 
 from typing import (
-    Dict,
     Generic,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Tuple,
     TypeVar,
 )
-
+from collections.abc import Iterable, Iterator
 
 _T = TypeVar("_T")
 _U = TypeVar("_U")
@@ -23,7 +17,7 @@ class DataStore(Generic[_T, _U]):
     state elements.
     """
 
-    _store: Dict[_T, _U]
+    _store: dict[_T, _U]
 
     def __init__(self) -> None:
         self._store = {}
@@ -31,7 +25,7 @@ class DataStore(Generic[_T, _U]):
     def __iter__(self) -> Iterator:
         return iter(self._store.items())
 
-    def all(self) -> List[_U]:
+    def all(self) -> list[_U]:
         """
         Get all `SubmittedBallot` from the store
         """
@@ -43,7 +37,7 @@ class DataStore(Generic[_T, _U]):
         """
         self._store.clear()
 
-    def get(self, key: _T) -> Optional[_U]:
+    def get(self, key: _T) -> _U | None:
         """
         Get value in store
         :param key: key
@@ -51,7 +45,7 @@ class DataStore(Generic[_T, _U]):
         """
         return self._store.get(key)
 
-    def items(self) -> Iterable[Tuple[_T, _U]]:
+    def items(self) -> Iterable[tuple[_T, _U]]:
         """
         Gets all items in store as list
         :return: List of (key, value)
@@ -72,7 +66,7 @@ class DataStore(Generic[_T, _U]):
         """
         return len(self._store)
 
-    def pop(self, key: _T) -> Optional[_U]:
+    def pop(self, key: _T) -> _U | None:
         """
         Pop an object from the store if it exists.
         :param key: key
@@ -105,7 +99,7 @@ class ReadOnlyDataStore(Generic[_T, _U], Mapping):
     def __init__(self, data: DataStore[_T, _U]):
         self._data: DataStore[_T, _U] = data
 
-    def __getitem__(self, key: _T) -> Optional[_U]:
+    def __getitem__(self, key: _T) -> _U | None:
         return self._data.get(key)
 
     def __len__(self) -> int:

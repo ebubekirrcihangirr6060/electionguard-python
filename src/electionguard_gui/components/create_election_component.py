@@ -126,8 +126,7 @@ class CreateElectionComponent(ComponentBase):
                 url,
             )
             return eel_success(election_id)
-        # pylint: disable=broad-except
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             return self.handle_error(e)
 
     def _zip(self, dir_to_zip: str, zip_file_to_make: str) -> str:

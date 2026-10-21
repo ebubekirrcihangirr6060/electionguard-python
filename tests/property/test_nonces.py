@@ -1,5 +1,3 @@
-from typing import List
-
 from hypothesis import given, assume
 from hypothesis.strategies import integers
 
@@ -41,7 +39,7 @@ class TestNonces(BaseTestCase):
     def test_nonces_with_slices(self, seed: ElementModQ):
         n = Nonces(seed)
         count: int = 0
-        l: List[ElementModQ] = []
+        l: list[ElementModQ] = []
 
         for i in iter(n):
             count += 1

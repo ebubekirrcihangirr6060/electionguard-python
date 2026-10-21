@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Any, Iterable, Optional, Union
+from typing import Any
+from collections.abc import Iterable
 
 
 from .big_integer import bytes_to_hex
@@ -121,7 +122,7 @@ class HashedElGamalCiphertext:
 
     def decrypt(
         self, secret_key: ElGamalSecretKey, encryption_seed: ElementModQ
-    ) -> Union[bytes, None]:
+    ) -> bytes | None:
         """
         Decrypt an ElGamal ciphertext using a known ElGamal secret key.
 
@@ -133,7 +134,7 @@ class HashedElGamalCiphertext:
         session_key = hash_elems(self.pad, pow_p(self.pad, secret_key))
         data_bytes = to_padded_bytes(self.data)
 
-        (ciphertext_chunks, bit_length) = _get_chunks(data_bytes)
+        ciphertext_chunks, bit_length = _get_chunks(data_bytes)
         mac_key = get_hmac(
             session_key.to_hex_bytes(),
             encryption_seed.to_hex_bytes(),
@@ -158,7 +159,7 @@ class HashedElGamalCiphertext:
         return data
 
 
-def elgamal_keypair_from_secret(a: ElementModQ) -> Optional[ElGamalKeyPair]:
+def elgamal_keypair_from_secret(a: ElementModQ) -> ElGamalKeyPair | None:
     """
     Given an ElGamal secret key (typically, a random number in [2,Q)), returns
     an ElGamal keypair, consisting of the given secret key a and public key g^a.
@@ -192,7 +193,7 @@ def elgamal_combine_public_keys(keys: Iterable[ElGamalPublicKey]) -> ElGamalPubl
 
 def elgamal_encrypt(
     message: int, nonce: ElementModQ, public_key: ElGamalPublicKey
-) -> Optional[ElGamalCiphertext]:
+) -> ElGamalCiphertext | None:
     """
     Encrypts a set length message with a given random nonce and an ElGamal public key.
 
@@ -237,7 +238,7 @@ def hashed_elgamal_encrypt(
 
     session_key = hash_elems(pad, pubkey_pow_n)
 
-    (message_chunks, bit_length) = _get_chunks(message)
+    message_chunks, bit_length = _get_chunks(message)
     data = b""
     for i, block in enumerate(message_chunks):
         data_key = get_hmac(

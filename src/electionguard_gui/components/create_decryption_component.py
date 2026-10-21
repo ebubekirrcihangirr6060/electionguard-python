@@ -55,6 +55,5 @@ class CreateDecryptionComponent(ComponentBase):
                 db, election_id, decryption_id, decryption_name
             )
             return eel_success(decryption_id)
-        # pylint: disable=broad-except
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             return self.handle_error(e)

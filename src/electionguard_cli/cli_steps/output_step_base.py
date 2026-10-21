@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import Any
 
 from electionguard import to_file
 from electionguard.guardian import Guardian, GuardianRecord
@@ -13,7 +13,7 @@ class OutputStepBase(CliStepBase):
 
     _COMPRESSION_FORMAT = "zip"
 
-    def _export_private_keys(self, output_keys: str, guardians: List[Guardian]) -> None:
+    def _export_private_keys(self, output_keys: str, guardians: list[Guardian]) -> None:
         if output_keys is None:
             return
 
@@ -32,7 +32,7 @@ class OutputStepBase(CliStepBase):
     @staticmethod
     def _get_guardian_records(
         election_inputs: CliElectionInputsBase,
-    ) -> List[GuardianRecord]:
+    ) -> list[GuardianRecord]:
         return [guardian.publish() for guardian in election_inputs.guardians]
 
     def _export_file(

@@ -1,7 +1,6 @@
 from copy import deepcopy
 from datetime import timedelta
 from random import Random
-from typing import Tuple
 
 from hypothesis import HealthCheck, Phase
 from hypothesis import given, settings
@@ -42,7 +41,6 @@ import electionguard_tools.factories.election_factory as ElectionFactory
 from electionguard_tools.strategies.elgamal import elgamal_keypairs
 from electionguard_tools.strategies.group import elements_mod_q_no_zero
 
-
 election_factory = ElectionFactory.ElectionFactory()
 ballot_factory = BallotFactory.BallotFactory()
 
@@ -65,7 +63,7 @@ class TestDecryptWithSecrets(BaseTestCase):
     )
     def test_decrypt_selection_valid_input_succeeds(
         self,
-        selection_description: Tuple[str, SelectionDescription],
+        selection_description: tuple[str, SelectionDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,
@@ -120,7 +118,7 @@ class TestDecryptWithSecrets(BaseTestCase):
     )
     def test_decrypt_selection_valid_input_tampered_fails(
         self,
-        selection_description: Tuple[str, SelectionDescription],
+        selection_description: tuple[str, SelectionDescription],
         keypair: ElGamalKeyPair,
         seed: ElementModQ,
         random_seed: int,
@@ -200,7 +198,7 @@ class TestDecryptWithSecrets(BaseTestCase):
     )
     def test_decrypt_selection_tampered_nonce_fails(
         self,
-        selection_description: Tuple[str, SelectionDescription],
+        selection_description: tuple[str, SelectionDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,
@@ -247,7 +245,7 @@ class TestDecryptWithSecrets(BaseTestCase):
     )
     def test_decrypt_contest_valid_input_succeeds(
         self,
-        contest_description: Tuple[str, ContestDescription],
+        contest_description: tuple[str, ContestDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,
@@ -408,7 +406,7 @@ class TestDecryptWithSecrets(BaseTestCase):
     )
     def test_decrypt_contest_invalid_input_fails(
         self,
-        contest_description: Tuple[str, ContestDescription],
+        contest_description: tuple[str, ContestDescription],
         keypair: ElGamalKeyPair,
         nonce_seed: ElementModQ,
         random_seed: int,

@@ -1,4 +1,3 @@
-from typing import Tuple
 from datetime import timedelta
 from hypothesis import HealthCheck
 from hypothesis import given, settings
@@ -39,7 +38,7 @@ class TestBallot(BaseTestCase):
     )
     @given(BallotFactory.get_selection_well_formed())
     def test_plaintext_ballot_selection_is_valid(
-        self, subject: Tuple[str, PlaintextBallotSelection]
+        self, subject: tuple[str, PlaintextBallotSelection]
     ):
         # Arrange
         object_id, selection = subject
@@ -59,7 +58,7 @@ class TestBallot(BaseTestCase):
     )
     @given(BallotFactory.get_selection_poorly_formed())
     def test_plaintext_ballot_selection_is_invalid(
-        self, subject: Tuple[str, PlaintextBallotSelection]
+        self, subject: tuple[str, PlaintextBallotSelection]
     ):
         # Arrange
         object_id, selection = subject

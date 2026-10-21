@@ -1,5 +1,4 @@
 import traceback
-from typing import List
 import eel
 
 from electionguard_gui.components import (
@@ -34,8 +33,8 @@ class MainApp:
 
     log_service: EelLogService
     db_service: DbService
-    components: List[ComponentBase]
-    services: List[ServiceBase]
+    components: list[ComponentBase]
+    services: list[ServiceBase]
 
     def __init__(
         self,

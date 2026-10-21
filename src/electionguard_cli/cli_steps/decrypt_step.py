@@ -1,4 +1,3 @@
-from typing import List
 import click
 from electionguard.guardian import Guardian
 from electionguard.utils import get_optional
@@ -28,8 +27,8 @@ class DecryptStep(CliStepBase):
     def decrypt(
         self,
         ciphertext_tally: CiphertextTally,
-        spoiled_ballots: List[SubmittedBallot],
-        guardians: List[Guardian],
+        spoiled_ballots: list[SubmittedBallot],
+        guardians: list[Guardian],
         build_election_results: BuildElectionResults,
         manifest: Manifest,
     ) -> CliDecryptResults:

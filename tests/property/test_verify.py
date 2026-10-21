@@ -1,6 +1,5 @@
 # pylint: disable=protected-access
 from datetime import timedelta
-from typing import Dict
 from hypothesis import given, HealthCheck, settings, Phase
 from hypothesis.strategies import integers
 
@@ -36,7 +35,6 @@ from electionguard_tools.helpers.key_ceremony_orchestrator import (
     KeyCeremonyOrchestrator,
 )
 from electionguard_tools.helpers.election_builder import ElectionBuilder
-
 
 election_factory = ElectionFactory.ElectionFactory()
 ballot_factory = BallotFactory.BallotFactory()
@@ -100,7 +98,7 @@ class TestVerify(BaseTestCase):
         ciphertext_tally = tally_ballots(ballot_store, internal_manifest, context)
 
         # precompute decryption shares for specific selection for the guardians
-        shares: Dict[GuardianId, DecryptionShare] = {
+        shares: dict[GuardianId, DecryptionShare] = {
             guardian.id: compute_decryption_share(
                 guardian._election_keys,
                 ciphertext_tally,

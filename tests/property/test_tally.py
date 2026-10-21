@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import Dict
 
 from hypothesis import given, HealthCheck, settings, Phase
 from hypothesis.strategies import integers
@@ -227,11 +226,11 @@ class TestTally(BaseTestCase):
     @staticmethod
     def _decrypt_with_secret(
         tally: CiphertextTally, secret_key: ElGamalSecretKey
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         """
         Demonstrates how to decrypt a tally with a known secret key
         """
-        plaintext_selections: Dict[str, int] = {}
+        plaintext_selections: dict[str, int] = {}
         for _, contest in tally.contests.items():
             for object_id, selection in contest.selections.items():
                 plaintext_tally = selection.ciphertext.decrypt(secret_key)

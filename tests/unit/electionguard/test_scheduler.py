@@ -1,6 +1,5 @@
 # pylint: disable=consider-using-with
 from multiprocessing import Pool
-from typing import List
 
 from tests.base_test_case import BaseTestCase
 
@@ -27,7 +26,7 @@ class TestScheduler(BaseTestCase):
 
         # Assert
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, List)
+        self.assertIsInstance(result, list)
         subject.close()
 
     def test_safe_map(self):
@@ -42,13 +41,13 @@ class TestScheduler(BaseTestCase):
         # verify exceptions are caught
         result = subject.safe_map(process_pool, _exception_callable, [1])
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, List)
+        self.assertIsInstance(result, list)
 
         # verify closing the poll catches the value error
         process_pool.close()
 
         result = subject.safe_map(process_pool, _callable, [1])
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, List)
+        self.assertIsInstance(result, list)
 
         subject.close()

@@ -2,7 +2,6 @@
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=unnecessary-comprehension
 
-from typing import Dict, List, Tuple
 
 from tests.base_test_case import BaseTestCase
 
@@ -37,7 +36,6 @@ from electionguard_tools.helpers.key_ceremony_orchestrator import (
 from electionguard_tools.helpers.tally_accumulate import accumulate_plaintext_ballots
 from electionguard_tools.helpers.election_builder import ElectionBuilder
 
-
 election_factory = ElectionFactory.ElectionFactory()
 ballot_factory = BallotFactory.BallotFactory()
 
@@ -55,7 +53,7 @@ class TestDecryptWithShares(BaseTestCase):
         self.key_ceremony_mediator = KeyCeremonyMediator(
             "key_ceremony_mediator_mediator", self.CEREMONY_DETAILS
         )
-        self.guardians: List[Guardian] = KeyCeremonyOrchestrator.create_guardians(
+        self.guardians: list[Guardian] = KeyCeremonyOrchestrator.create_guardians(
             self.CEREMONY_DETAILS
         )
         KeyCeremonyOrchestrator.perform_full_ceremony(
@@ -182,7 +180,7 @@ class TestDecryptWithShares(BaseTestCase):
         print(first_selection.object_id)
 
         # precompute decryption shares for specific selection for the guardians
-        shares: Dict[GuardianId, Tuple[ElementModP, DecryptionShare]] = {
+        shares: dict[GuardianId, tuple[ElementModP, DecryptionShare]] = {
             guardian.id: (
                 guardian.share_key().key,
                 compute_decryption_share(

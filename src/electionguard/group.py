@@ -6,7 +6,7 @@ made about timing or other side-channels.
 """
 
 from abc import ABC
-from typing import Final, Union
+from typing import Final
 from secrets import randbelow
 from sys import maxsize
 
@@ -81,10 +81,10 @@ ZERO_MOD_P: Final[ElementModP] = ElementModP(0)
 ONE_MOD_P: Final[ElementModP] = ElementModP(1)
 TWO_MOD_P: Final[ElementModP] = ElementModP(2)
 
-ElementModPOrQ = Union[ElementModP, ElementModQ]
-ElementModPOrQorInt = Union[ElementModP, ElementModQ, int]
-ElementModQorInt = Union[ElementModQ, int]
-ElementModPorInt = Union[ElementModP, int]
+ElementModPOrQ = ElementModP | ElementModQ
+ElementModPOrQorInt = ElementModP | ElementModQ | int
+ElementModQorInt = ElementModQ | int
+ElementModPorInt = ElementModP | int
 
 
 def _get_mpz(input: BaseElement | int) -> mpz:

@@ -2,11 +2,7 @@
 from abc import abstractmethod
 from collections.abc import Iterable, Sequence
 from hashlib import sha256
-from typing import (
-    Union,
-    Protocol,
-    runtime_checkable,
-)
+from typing import Protocol, runtime_checkable
 
 from .constants import get_small_prime
 from .utils import BYTE_ENCODING, BYTE_ORDER
@@ -44,15 +40,12 @@ class CryptoHashCheckable(Protocol):
 
 
 # All the "atomic" types that we know how to hash.
-CryptoHashableT = Union[CryptoHashable, ElementModPOrQ, str, int, None]
+CryptoHashableT = CryptoHashable | ElementModPOrQ | str | int | None
 
 # "Compound" types that we know how to hash. Note that we're using Sequence, rather than List,
 # because Sequences are read-only, and thus safely covariant. All this really means is that
 # we promise never to mutate any list that you pass to hash_elems.
-CryptoHashableAll = Union[
-    Sequence[CryptoHashableT],
-    CryptoHashableT,
-]
+CryptoHashableAll = Sequence[CryptoHashableT] | CryptoHashableT
 
 
 def hash_elems(*a: CryptoHashableAll) -> ElementModQ:

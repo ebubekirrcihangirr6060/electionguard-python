@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Union
 
 from .chaum_pedersen import ChaumPedersenProof
 from .election_object_base import ElectionObjectBase
@@ -44,9 +43,9 @@ class CiphertextCompensatedDecryptionSelection(ElectionObjectBase):
     """
 
 
-ProofOrRecovery = Union[
-    ChaumPedersenProof, dict[GuardianId, CiphertextCompensatedDecryptionSelection]
-]
+ProofOrRecovery = (
+    ChaumPedersenProof | dict[GuardianId, CiphertextCompensatedDecryptionSelection]
+)
 
 
 @dataclass
